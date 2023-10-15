@@ -28,6 +28,7 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 	user.Email = req.Email
 	user.Password = utils.HashPassword(req.Password)
 	user.Language = req.Language
+	user.Handle = req.Handle
 
 	s.H.DB.Create(&user)
 
@@ -60,8 +61,14 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 	return &pb.LoginResponse{
 		Status: http.StatusOK,
 		UserId: user.Id,
+		Handle: user.Handle,
 		Token:  token,
 	}, nil
+}
+
+func Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutResponse, error) {
+
+	return &pb.LogoutResponse{}, nil
 }
 
 func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
@@ -86,5 +93,6 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 	return &pb.ValidateResponse{
 		Status: http.StatusOK,
 		UserId: user.Id,
+		Handle: user.Handle,
 	}, nil
 }

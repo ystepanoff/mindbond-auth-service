@@ -5,4 +5,6 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Language string `json:"language"`
+	Handle   string `json:"handle"`
+	Token    string `json:"token"`
 }

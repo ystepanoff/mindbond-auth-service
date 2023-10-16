@@ -95,8 +95,7 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 	}
 
 	var user models.User
-
-	if result := s.H.DB.Where(&models.User{Email: claims.Email}).First(&user); result.Error != nil {
+	if result := s.H.DB.Where(&models.User{Email: claims.Email, Token: req.Token}).First(&user); result.Error != nil {
 		return &pb.ValidateResponse{
 			Status: http.StatusNotFound,
 			Error:  "User not found",

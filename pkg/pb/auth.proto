@@ -7,6 +7,7 @@ option go_package = "./pkg/pb";
 service AuthService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
   rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
 }
 

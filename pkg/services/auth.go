@@ -66,7 +66,18 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 	}, nil
 }
 
-func Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutResponse, error) {
+func (s *Server) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutResponse, error) {
+	var user models.User
+
+	if result := s.H.DB.Where(&models.User{Id: req.UserId, Token: req.Token}).First(&user); result.Error != nil {
+		return &pb.LogoutResponse{
+			Status: http.StatusNotFound,
+			Error:  "User not found",
+		}, nil
+	}
+
+	user.Token = ""
+	s.H.DB.Save(&user)
 
 	return &pb.LogoutResponse{}, nil
 }

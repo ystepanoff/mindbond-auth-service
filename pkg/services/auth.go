@@ -57,6 +57,8 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 	}
 
 	token, _ := s.Jwt.GenerateToken(user)
+	user.Token = token
+	s.H.DB.Save(&user)
 
 	return &pb.LoginResponse{
 		Status: http.StatusOK,

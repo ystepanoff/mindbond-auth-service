@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"flotta-home/mindbond/auth-service/pkg/pb"
-	"fmt"
 	"net/http"
 
 	"flotta-home/mindbond/auth-service/pkg/db"
@@ -37,8 +36,7 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 	user.Password = utils.HashPassword(req.Password)
 	user.Language = req.Language
 	user.Handle = req.Handle
-
-	fmt.Println(user)
+	user.Language = req.Language
 
 	s.H.DB.Create(&user)
 

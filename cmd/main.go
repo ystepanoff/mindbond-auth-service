@@ -7,7 +7,7 @@ import (
 
 	"flotta-home/mindbond/auth-service/pkg/config"
 	"flotta-home/mindbond/auth-service/pkg/db"
-	"flotta-home/mindbond/auth-service/pkg/pb"
+	"flotta-home/mindbond/auth-service/pkg/pb_old"
 	"flotta-home/mindbond/auth-service/pkg/services"
 	"flotta-home/mindbond/auth-service/pkg/utils"
 	"google.golang.org/grpc"

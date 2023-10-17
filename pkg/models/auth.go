@@ -7,4 +7,5 @@ type User struct {
 	Language string `json:"language"`
 	Handle   string `json:"handle"`
 	Token    string `json:"token"`
+	Active   bool   `json:"active" gorm:"default:false"`
 }

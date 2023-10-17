@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"flotta-home/mindbond/auth-service/pkg/pb"
+	"fmt"
 	"net/http"
 
 	"flotta-home/mindbond/auth-service/pkg/db"
@@ -25,10 +26,19 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 		}, nil
 	}
 
+	if result := s.H.DB.Where(&models.User{Handle: req.Handle}).First(&user); result.Error == nil {
+		return &pb.RegisterResponse{
+			Status: http.StatusConflict,
+			Error:  "Username already exists",
+		}, nil
+	}
+
 	user.Email = req.Email
 	user.Password = utils.HashPassword(req.Password)
 	user.Language = req.Language
 	user.Handle = req.Handle
+
+	fmt.Println(user)
 
 	s.H.DB.Create(&user)
 

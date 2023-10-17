@@ -2,11 +2,11 @@ package services
 
 import (
 	"context"
+	"flotta-home/mindbond/auth-service/pkg/pb"
 	"net/http"
 
 	"flotta-home/mindbond/auth-service/pkg/db"
 	"flotta-home/mindbond/auth-service/pkg/models"
-	"flotta-home/mindbond/auth-service/pkg/pb_old"
 	"flotta-home/mindbond/auth-service/pkg/utils"
 )
 

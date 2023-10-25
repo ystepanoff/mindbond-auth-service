@@ -111,8 +111,10 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 	}
 
 	return &pb.ValidateResponse{
-		Status: http.StatusOK,
-		UserId: user.Id,
-		Handle: user.Handle,
+		Status:   http.StatusOK,
+		UserId:   user.Id,
+		Handle:   user.Handle,
+		Email:    user.Email,
+		Language: user.Language,
 	}, nil
 }

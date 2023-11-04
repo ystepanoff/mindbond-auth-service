@@ -59,8 +59,8 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 
 	if !match {
 		return &pb.LoginResponse{
-			Status: http.StatusNotFound,
-			Error:  "User not found",
+			Status: http.StatusUnauthorized,
+			Error:  "Wrong password",
 		}, nil
 	}
 
@@ -73,6 +73,30 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		UserId: user.Id,
 		Handle: user.Handle,
 		Token:  token,
+	}, nil
+}
+
+func (s *Server) DryLogin(ctx context.Context, req *pb.DryLoginRequest) (*pb.DryLoginResponse, error) {
+	var user models.User
+
+	if result := s.H.DB.Where(&models.User{Email: req.Email}).First(&user); result.Error != nil {
+		return &pb.DryLoginResponse{
+			Status: http.StatusNotFound,
+			Error:  "User not found",
+		}, nil
+	}
+
+	match := utils.CheckPasswordHash(req.Password, user.Password)
+
+	if !match {
+		return &pb.DryLoginResponse{
+			Status: http.StatusUnauthorized,
+			Error:  "Wrong password",
+		}, nil
+	}
+
+	return &pb.DryLoginResponse{
+		Status: http.StatusOK,
 	}, nil
 }
 

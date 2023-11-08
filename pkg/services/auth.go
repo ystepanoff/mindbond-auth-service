@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flotta-home/mindbond/auth-service/pkg/pb"
+	"fmt"
 	"gorm.io/gorm"
 	"net/http"
 
@@ -50,10 +51,13 @@ func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateR
 	var user models.User
 
 	if result := s.H.DB.Where(&models.User{Email: req.Email}).First(&user); result.Error == nil {
-		return &pb.UpdateResponse{
-			Status: http.StatusConflict,
-			Error:  "E-Mail already exists",
-		}, nil
+		fmt.Println(user.Id, req.UserId)
+		if user.Id != req.UserId {
+			return &pb.UpdateResponse{
+				Status: http.StatusConflict,
+				Error:  "E-Mail already exists",
+			}, nil
+		}
 	}
 
 	if result := s.H.DB.Where(&models.User{Id: req.UserId}).First(&user); result.Error != nil {

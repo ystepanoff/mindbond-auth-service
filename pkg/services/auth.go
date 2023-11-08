@@ -2,7 +2,9 @@ package services
 
 import (
 	"context"
+	"errors"
 	"flotta-home/mindbond/auth-service/pkg/pb"
+	"gorm.io/gorm"
 	"net/http"
 
 	"flotta-home/mindbond/auth-service/pkg/db"
@@ -36,12 +38,46 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 	user.Password = utils.HashPassword(req.Password)
 	user.Language = req.Language
 	user.Handle = req.Handle
-	user.Language = req.Language
 
 	s.H.DB.Create(&user)
 
 	return &pb.RegisterResponse{
 		Status: http.StatusCreated,
+	}, nil
+}
+
+func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	var user models.User
+
+	if result := s.H.DB.Where(&models.User{Email: req.Email}).First(&user); result.Error == nil {
+		return &pb.UpdateResponse{
+			Status: http.StatusConflict,
+			Error:  "E-Mail already exists",
+		}, nil
+	}
+
+	if result := s.H.DB.Where(&models.User{Id: req.UserId}).First(&user); result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return &pb.UpdateResponse{
+				Status: http.StatusNotFound,
+				Error:  "User not found",
+			}, nil
+		}
+		return &pb.UpdateResponse{
+			Status: http.StatusInternalServerError,
+			Error:  "Internal error",
+		}, nil
+	}
+
+	user.Email = req.Email
+	user.Password = utils.HashPassword(req.Password)
+	user.Language = req.Language
+	user.Handle = req.Handle
+
+	s.H.DB.Save(&user)
+
+	return &pb.UpdateResponse{
+		Status: http.StatusOK,
 	}, nil
 }
 

@@ -47,7 +47,6 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 }
 
 func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	// TODO: token validation
 	var user models.User
 
 	if result := s.H.DB.Where(&models.User{Email: req.Email}).First(&user); result.Error == nil {
@@ -57,6 +56,13 @@ func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateR
 				Error:  "E-Mail already exists",
 			}, nil
 		}
+	}
+
+	if user.Token != req.Token {
+		return &pb.UpdateResponse{
+			Status: http.StatusConflict,
+			Error:  "Inconsistent user token, try logging in again",
+		}, nil
 	}
 
 	if result := s.H.DB.Where(&models.User{Id: req.UserId}).First(&user); result.Error != nil {

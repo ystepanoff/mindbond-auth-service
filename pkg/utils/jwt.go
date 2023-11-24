@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"flotta-home/mindbond/auth-service/pkg/models"
@@ -31,12 +32,13 @@ func (w *JwtWrapper) GenerateToken(user models.User) (signedToken string, err er
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
 	signedToken, err = token.SignedString([]byte(w.SecretKey))
 
 	if err != nil {
 		return "", err
 	}
+
+	fmt.Println("Called", signedToken)
 
 	return signedToken, nil
 }

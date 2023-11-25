@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"flotta-home/mindbond/auth-service/pkg/models"
@@ -33,12 +32,9 @@ func (w *JwtWrapper) GenerateToken(user models.User) (signedToken string, err er
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString([]byte(w.SecretKey))
-
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println("Called", signedToken)
 
 	return signedToken, nil
 }
@@ -55,13 +51,10 @@ func (w *JwtWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err e
 	if err != nil {
 		return
 	}
-
 	claims, ok := token.Claims.(*jwtClaims)
-
 	if !ok {
 		return nil, errors.New("Couldn't parse claims")
 	}
-
 	if claims.ExpiresAt < time.Now().Local().Unix() {
 		return nil, errors.New("JWT is expired")
 	}

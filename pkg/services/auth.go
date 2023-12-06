@@ -187,3 +187,37 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 		Language: user.Language,
 	}, nil
 }
+
+func (s *Server) Lookup(ctx context.Context, req *pb.LookupRequest) (*pb.LookupResponse, error) {
+	var user *models.User
+
+	if req.UserId != 0 {
+		if result := s.H.DB.Where(&models.User{Id: req.UserId}).First(&user); result.Error != nil {
+			return &pb.LookupResponse{
+				Status: http.StatusNotFound,
+				Error:  "User not found",
+			}, nil
+		}
+	} else if req.Email != "" {
+		if result := s.H.DB.Where(&models.User{Email: req.Email}).First(&user); result.Error != nil {
+			return &pb.LookupResponse{
+				Status: http.StatusNotFound,
+				Error:  "User not found",
+			}, nil
+		}
+	} else if req.Handle != "" {
+		if result := s.H.DB.Where(&models.User{Email: req.Handle}).First(&user); result.Error != nil {
+			return &pb.LookupResponse{
+				Status: http.StatusNotFound,
+				Error:  "User not found",
+			}, nil
+		}
+	}
+
+	return &pb.LookupResponse{
+		Status: http.StatusOK,
+		UserId: user.Id,
+		Email:  user.Email,
+		Handle: user.Handle,
+	}, nil
+}

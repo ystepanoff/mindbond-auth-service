@@ -211,6 +211,11 @@ func (s *Server) Lookup(ctx context.Context, req *pb.LookupRequest) (*pb.LookupR
 				Error:  "User not found",
 			}, nil
 		}
+	} else {
+		return &pb.LookupResponse{
+			Status: http.StatusBadRequest,
+			Error:  "No lookup criteria provided",
+		}, nil
 	}
 	return &pb.LookupResponse{
 		Status: http.StatusOK,

@@ -190,7 +190,6 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 
 func (s *Server) Lookup(ctx context.Context, req *pb.LookupRequest) (*pb.LookupResponse, error) {
 	var user *models.User
-
 	if req.UserId != 0 {
 		if result := s.H.DB.Where(&models.User{Id: req.UserId}).First(&user); result.Error != nil {
 			return &pb.LookupResponse{
@@ -206,14 +205,13 @@ func (s *Server) Lookup(ctx context.Context, req *pb.LookupRequest) (*pb.LookupR
 			}, nil
 		}
 	} else if req.Handle != "" {
-		if result := s.H.DB.Where(&models.User{Email: req.Handle}).First(&user); result.Error != nil {
+		if result := s.H.DB.Where(&models.User{Handle: req.Handle}).First(&user); result.Error != nil {
 			return &pb.LookupResponse{
 				Status: http.StatusNotFound,
 				Error:  "User not found",
 			}, nil
 		}
 	}
-
 	return &pb.LookupResponse{
 		Status: http.StatusOK,
 		UserId: user.Id,

@@ -218,9 +218,10 @@ func (s *Server) Lookup(ctx context.Context, req *pb.LookupRequest) (*pb.LookupR
 		}, nil
 	}
 	return &pb.LookupResponse{
-		Status: http.StatusOK,
-		UserId: user.Id,
-		Email:  user.Email,
-		Handle: user.Handle,
+		Status:   http.StatusOK,
+		UserId:   user.Id,
+		Email:    user.Email,
+		Handle:   user.Handle,
+		Language: user.Language,
 	}, nil
 }
